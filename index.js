@@ -57,9 +57,8 @@ window.onload = () => {
 };
 
 function updateStore(id, value) {
-  console.log(id, value);
-
   store.ids[id].value = value;
+  saveSettings();
 }
 
 function loadSettings() {
@@ -72,8 +71,8 @@ function loadSettings() {
   });
 
   Object.keys(lists).forEach(list => {
-    const arr = localStorage.getItem(lists[list].title) || [];
-    lists[list] = arr;
+    const json = localStorage.getItem(lists[list].title) || [];
+    lists[list] = JSON.parse(json);
   });
 }
 
@@ -85,7 +84,7 @@ function saveSettings() {
   });
 
   Object.keys(lists).forEach(list => {
-    localStorage.setItem(list, lists[list]);
+    localStorage.setItem(list, JSON.stringify(lists[list]));
   });
 }
 
@@ -206,6 +205,7 @@ function removeStreams(streams) {
 function blockStream(username) {
   store.lists.block.push(username);
   renderBlockList();
+  saveSettings();
 }
 
 function unBlockStream(username) {
@@ -214,6 +214,7 @@ function unBlockStream(username) {
     1
   );
   renderBlockList();
+  saveSettings();
 }
 
 function favoriteStream(username) {
@@ -223,6 +224,7 @@ function favoriteStream(username) {
     unFavoriteStream(username);
   }
   document.querySelector(`#${username}`).classList.toggle("favorite");
+  saveSettings();
 }
 
 function unFavoriteStream(username) {
