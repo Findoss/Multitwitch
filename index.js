@@ -71,8 +71,8 @@ function loadSettings() {
   });
 
   Object.keys(lists).forEach(list => {
-    const json = localStorage.getItem(lists[list].title) || [];
-    lists[list] = JSON.parse(json);
+    const arr = JSON.parse(localStorage.getItem(list)) || [];
+    lists[list] = arr;
   });
 }
 
