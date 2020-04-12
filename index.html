@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Multitwitch</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-button" id="sidebar-toggle"></div>
+      <div class="sidebar-content">
+        <div class="menu" id="menu">
+          <div class="menu-row">
+            <label for="token">token</label>
+            <input id="token" class="token" value="" type="password" />
+          </div>
+          <div class="menu-row">
+            <label for="game_id">game</label>
+            <input id="game_id" type="text" class="game_id" value="" />
+          </div>
+          <div class="menu-row">
+            <label for="langs">lang</label>
+            <input id="langs" type="text" class="langs" value="" />
+          </div>
+          <div class="menu-row">
+            <label for="first">limit</label>
+            <input id="first" type="text" class="first" value="" />
+          </div>
+        </div>
+        <div>
+          <button id="update-toggle">START UPDATE</button>
+        </div>
+        <br />
+        <hr />
+        <br />
+        <label>block list</label>
+        <ul class="list" id="block-list"></ul>
+        <br />
+        <hr />
+        <br />
+      </div>
+    </div>
+
+    <div id="app"></div>
+  </body>
+  <script src="index.js"></script>
+</html>
