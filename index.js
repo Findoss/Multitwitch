@@ -108,7 +108,7 @@ function templateStream(i) {
     <div class="stream-menu">
       <span class="stream-title">
         <a
-          class="stream-user ${i.favorite ? "favorite" : ""}"
+          class="stream-user"
           target="_blank"
           href="${URL_PLAYER}=${i.user_name}"
         >
@@ -150,14 +150,15 @@ function renderBlockList() {
 
 function renderStreams(streams) {
   const APP = document.querySelector("#app");
+  const {favorite, block} = store.lists;
   // add
   streams.forEach(stream => {
-    if (store.lists.favorite.some(v => v === stream.user_name)) stream.favorite = true;
-    if (!store.lists.block.some(v => v === stream.user_name)) {
+    if (favorite.some(v => v === stream.user_name)) stream.favorite = true;
+    if (!block.some(v => v === stream.user_name)) {
       const el = document.createElement("div");
       el.innerHTML = templateStream(stream);
       el.id = stream.user_name;
-      el.className = "stream";
+      el.className = `stream ${stream.favorite ? "favorite" : ""}`;
 
       // events
       el.querySelector(`#${stream.user_name} .stream-close`).addEventListener("click", e => {
@@ -176,13 +177,14 @@ function renderStreams(streams) {
         delStreams([{ user_name }]);
       });
 
+      store.streams.push(stream);
+
       APP.append(el);
     }
   });
 }
 
 function addStreams(streams) {
-  store.streams.push(...streams);
   renderStreams(streams);
 }
 
@@ -273,7 +275,8 @@ function diffListStreams(oldListStreams, listStreams) {
       }
     });
   }
-  console.log("diff", result);
+  // console.log("update", result);
+  // console.log("store", store);
   return result;
 }
 
