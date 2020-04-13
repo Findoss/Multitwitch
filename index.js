@@ -237,7 +237,9 @@ function unFavoriteStream(username) {
 }
 
 async function getStreamList(token, ids, langs, first) {
-  const params = `?first=${first}&game_id=${ids}&language=${langs}`;
+  const strIds = ids.split(';').reduce((acc,id)=> acc+=`&game_id=${id}`,'');
+  const strLangs = langs.split(';').reduce((acc,id)=> acc+=`&game_id=${id}`,'');
+  const params = `?first=${first}${strIds}${strLangs}`;
 
   const response = await fetch(`${URL_TWICH_API}${params}`, {
     method: "GET",
