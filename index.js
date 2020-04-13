@@ -80,7 +80,7 @@ function saveSettings() {
   const { ids, lists } = store;
 
   Object.keys(ids).forEach(id => {
-    localStorage.setItem(id, document.querySelector(`#${id}`).value)
+    localStorage.setItem(id, document.querySelector(`#${id}`).value);
   });
 
   Object.keys(lists).forEach(list => {
@@ -150,36 +150,38 @@ function renderBlockList() {
 
 function renderStreams(streams) {
   const APP = document.querySelector("#app");
-  const {favorite, block} = store.lists;
+  const { favorite, block } = store.lists;
   // add
-  streams.forEach(stream => {
-    if (favorite.some(v => v === stream.user_name)) stream.favorite = true;
-    if (!block.some(v => v === stream.user_name)) {
-      const el = document.createElement("div");
-      el.innerHTML = templateStream(stream);
-      el.id = stream.user_name;
-      el.className = `stream ${stream.favorite ? "favorite" : ""}`;
+  streams.forEach((stream, i) => {
+    if (i <= store.ids.first.value) {
+      if (favorite.some(v => v === stream.user_name)) stream.favorite = true;
+      if (!block.some(v => v === stream.user_name)) {
+        const el = document.createElement("div");
+        el.innerHTML = templateStream(stream);
+        el.id = stream.user_name;
+        el.className = `stream ${stream.favorite ? "favorite" : ""}`;
 
-      // events
-      el.querySelector(`#${stream.user_name} .stream-close`).addEventListener("click", e => {
-        const user_name = e.target.offsetParent.id;
-        delStreams([{ user_name }]);
-      });
+        // events
+        el.querySelector(`#${stream.user_name} .stream-close`).addEventListener("click", e => {
+          const user_name = e.target.offsetParent.id;
+          delStreams([{ user_name }]);
+        });
 
-      el.querySelector(`#${stream.user_name} .stream-favorite`).addEventListener("click", e => {
-        const user_name = e.target.offsetParent.id;
-        favoriteStream(user_name);
-      });
+        el.querySelector(`#${stream.user_name} .stream-favorite`).addEventListener("click", e => {
+          const user_name = e.target.offsetParent.id;
+          favoriteStream(user_name);
+        });
 
-      el.querySelector(`#${stream.user_name} .stream-block`).addEventListener("click", e => {
-        const user_name = e.target.offsetParent.id;
-        blockStream(user_name);
-        delStreams([{ user_name }]);
-      });
+        el.querySelector(`#${stream.user_name} .stream-block`).addEventListener("click", e => {
+          const user_name = e.target.offsetParent.id;
+          blockStream(user_name);
+          delStreams([{ user_name }]);
+        });
 
-      store.streams.push(stream);
+        store.streams.push(stream);
 
-      APP.append(el);
+        APP.append(el);
+      }
     }
   });
 }
@@ -237,9 +239,10 @@ function unFavoriteStream(username) {
 }
 
 async function getStreamList(token, ids, langs, first) {
-  const strIds = ids.split(';').reduce((acc,id)=> acc+=`&game_id=${id}`,'');
-  const strLangs = langs.split(';').reduce((acc,id)=> acc+=`&game_id=${id}`,'');
-  const params = `?first=${first}${strIds}${strLangs}`;
+  const strIds = ids.split(";").reduce((acc, id) => (acc += `&game_id=${id}`), "");
+  const strLangs = langs.split(";").reduce((acc, id) => (acc += `&game_id=${id}`), "");
+  const limit = first + store.lists.block.length;
+  const params = `?first=${limit}${strIds}${strLangs}`;
 
   const response = await fetch(`${URL_TWICH_API}${params}`, {
     method: "GET",
