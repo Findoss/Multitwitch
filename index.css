@@ -38,6 +38,7 @@
 
 html {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
 }
 
 body {
@@ -151,7 +152,7 @@ li {
 }
 
 .sidebar-button::after {
-  content: "❬";
+  content: '❬';
   position: relative;
   font-size: 30px;
   top: 0px;
@@ -159,7 +160,7 @@ li {
 }
 
 .sidebar.hide .sidebar-button::after {
-  content: "❭";
+  content: '❭';
 }
 
 .sidebar-content {
@@ -202,8 +203,6 @@ li {
 .list--item button {
   width: 30px;
 }
-
-
 
 .stream {
   position: relative;

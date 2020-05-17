@@ -1,26 +1,30 @@
 let timer = null;
 
-const URL_PLAYER = "https://player.twitch.tv/?muted=true&channel";
-const URL_TWICH_API = "https://api.twitch.tv/helix/streams";
+const URL_PLAYER = 'https://player.twitch.tv/?muted=true&channel';
+const URL_TWICH_API = 'https://api.twitch.tv/helix/streams';
 const UPDATE_TIME = 7000;
 
 const store = {
   ids: {
     token: {
-      value: "",
-      default: "kimne78kx3ncx6brgo4mv6wki5h1ko"
+      value: '',
+      default: 'zxm03ltabuzpiy5jzdkwjy0fcb9lnl'
+    },
+    client_id: {
+      value: '',
+      default: 'kimne78kx3ncx6brgo4mv6wki5h1ko'
     },
     game_id: {
-      value: "",
-      default: "500188"
+      value: '',
+      default: '500188'
     },
     langs: {
-      value: "",
-      default: "ru"
+      value: '',
+      default: 'ru'
     },
     first: {
-      value: "",
-      default: "10"
+      value: '',
+      default: '10'
     }
   },
   lists: {
@@ -31,8 +35,8 @@ const store = {
 };
 
 window.onload = () => {
-  document.querySelector("#sidebar-toggle").addEventListener("click", e => {
-    document.querySelector(".sidebar").classList.toggle("hide");
+  document.querySelector('#sidebar-toggle').addEventListener('click', e => {
+    document.querySelector('.sidebar').classList.toggle('hide');
   });
 
   loadSettings();
@@ -41,19 +45,22 @@ window.onload = () => {
 
   updateToggle();
 
-  document.querySelector("#update-toggle").addEventListener("click", updateToggle);
+  document.querySelector('#update-toggle').addEventListener('click', updateToggle);
   document
-    .querySelector("#token")
-    .addEventListener("change", e => updateStore(e.target.id, e.target.value));
+    .querySelector('#token')
+    .addEventListener('change', e => updateStore(e.target.id, e.target.value));
   document
-    .querySelector("#game_id")
-    .addEventListener("input", e => updateStore(e.target.id, e.target.value));
+    .querySelector('#client_id')
+    .addEventListener('change', e => updateStore(e.target.id, e.target.value));
   document
-    .querySelector("#langs")
-    .addEventListener("input", e => updateStore(e.target.id, e.target.value));
+    .querySelector('#game_id')
+    .addEventListener('input', e => updateStore(e.target.id, e.target.value));
   document
-    .querySelector("#first")
-    .addEventListener("input", e => updateStore(e.target.id, e.target.value));
+    .querySelector('#langs')
+    .addEventListener('input', e => updateStore(e.target.id, e.target.value));
+  document
+    .querySelector('#first')
+    .addEventListener('input', e => updateStore(e.target.id, e.target.value));
 };
 
 function updateStore(id, value) {
@@ -133,7 +140,7 @@ function templateStream(i) {
 
 function renderBlockList() {
   const { lists } = store;
-  document.querySelector(`#block-list`).innerHTML = "";
+  document.querySelector(`#block-list`).innerHTML = '';
 
   // add
   lists.block.forEach(i => {
@@ -142,37 +149,37 @@ function renderBlockList() {
 
   // events
   lists.block.forEach(i => {
-    document.querySelector(`#${i}_unblock`).addEventListener("click", e => {
+    document.querySelector(`#${i}_unblock`).addEventListener('click', e => {
       unBlockStream(i);
     });
   });
 }
 
 function renderStreams(streams) {
-  const APP = document.querySelector("#app");
+  const APP = document.querySelector('#app');
   const { favorite, block } = store.lists;
   // add
   streams.forEach((stream, i) => {
     if (i <= store.ids.first.value) {
       if (favorite.some(v => v === stream.user_name)) stream.favorite = true;
       if (!block.some(v => v === stream.user_name)) {
-        const el = document.createElement("div");
+        const el = document.createElement('div');
         el.innerHTML = templateStream(stream);
         el.id = stream.user_name;
-        el.className = `stream ${stream.favorite ? "favorite" : ""}`;
+        el.className = `stream ${stream.favorite ? 'favorite' : ''}`;
 
         // events
-        el.querySelector(`#${stream.user_name} .stream-close`).addEventListener("click", e => {
+        el.querySelector(`#${stream.user_name} .stream-close`).addEventListener('click', e => {
           const user_name = e.target.offsetParent.id;
           delStreams([{ user_name }]);
         });
 
-        el.querySelector(`#${stream.user_name} .stream-favorite`).addEventListener("click", e => {
+        el.querySelector(`#${stream.user_name} .stream-favorite`).addEventListener('click', e => {
           const user_name = e.target.offsetParent.id;
           favoriteStream(user_name);
         });
 
-        el.querySelector(`#${stream.user_name} .stream-block`).addEventListener("click", e => {
+        el.querySelector(`#${stream.user_name} .stream-block`).addEventListener('click', e => {
           const user_name = e.target.offsetParent.id;
           blockStream(user_name);
           delStreams([{ user_name }]);
@@ -227,7 +234,7 @@ function favoriteStream(username) {
   } else {
     unFavoriteStream(username);
   }
-  document.querySelector(`#${username}`).classList.toggle("favorite");
+  document.querySelector(`#${username}`).classList.toggle('favorite');
   saveSettings();
 }
 
@@ -238,24 +245,27 @@ function unFavoriteStream(username) {
   );
 }
 
-async function getStreamList(token, ids, langs, first) {
-  const strIds = ids.split(";").reduce((acc, id) => (acc += `&game_id=${id}`), "");
-  const strLangs = langs.split(";").reduce((acc, id) => (acc += `&game_id=${id}`), "");
+async function getStreamList(token, client_id, ids, langs, first) {
+  const strIds = ids.split(';').reduce((acc, id) => (acc += `&game_id=${id}`), '');
+  const strLangs = langs.split(';').reduce((acc, id) => (acc += `&game_id=${id}`), '');
   const limit = first + store.lists.block.length;
   const params = `?first=${limit}${strIds}${strLangs}`;
 
+  console.log(token, client_id);
+
   const response = await fetch(`${URL_TWICH_API}${params}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      "Client-ID": token
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'Client-ID': client_id
     }
   });
 
   if (response.ok) {
     return response.json();
   } else {
-    alert("API ERROR");
+    alert('API ERROR');
   }
 }
 
@@ -286,22 +296,28 @@ function diffListStreams(oldListStreams, listStreams) {
 }
 
 function updateToggle() {
-  const start = document.querySelector("#update-toggle");
-  if (start.innerText === "STOP UPDATE") {
+  const start = document.querySelector('#update-toggle');
+  if (start.innerText === 'STOP UPDATE') {
     clearTimeout(timer);
-    start.innerText = "START UPDATE";
+    start.innerText = 'START UPDATE';
   } else {
     update();
     timer = setInterval(update, UPDATE_TIME);
-    start.innerText = "STOP UPDATE";
+    start.innerText = 'STOP UPDATE';
   }
 }
 
 async function update() {
-  const { token, game_id, langs, first } = store.ids;
+  const { client_id, token, game_id, langs, first } = store.ids;
   const { streams } = store;
 
-  const newStreams = await getStreamList(token.value, game_id.value, langs.value, first.value);
+  const newStreams = await getStreamList(
+    token.value,
+    client_id.value,
+    game_id.value,
+    langs.value,
+    first.value
+  );
 
   const listStreams = diffListStreams(streams, newStreams);
 
