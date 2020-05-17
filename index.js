@@ -248,10 +248,10 @@ function unFavoriteStream(username) {
 async function getStreamList(token, client_id, ids, langs, first) {
   const strIds = ids.split(';').reduce((acc, id) => (acc += `&game_id=${id}`), '');
   const strLangs = langs.split(';').reduce((acc, id) => (acc += `&game_id=${id}`), '');
-  const limit = first + store.lists.block.length;
+  const limit = Number(first) + store.lists.block.length;
   const params = `?first=${limit}${strIds}${strLangs}`;
-
-  console.log(token, client_id);
+  console.log(limit);
+  // console.log(`${URL_TWICH_API}${params}`);
 
   const response = await fetch(`${URL_TWICH_API}${params}`, {
     method: 'GET',
@@ -290,8 +290,8 @@ function diffListStreams(oldListStreams, listStreams) {
       }
     });
   }
-  // console.log("update", result);
-  // console.log("store", store);
+  console.log('update', result);
+  console.log('store', store);
   return result;
 }
 
